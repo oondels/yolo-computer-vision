@@ -1,0 +1,6 @@
+train: ./images/train # Caminho para o diretório de treino
+val: ./images/val # Caminho para o diretório de validação
+
+nc: 1 # Número de classes
+
+names: ["takt_time"]

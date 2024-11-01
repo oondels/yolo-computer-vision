@@ -39,7 +39,15 @@ async def main():
                 texto_extraido = pytesseract.image_to_string(roi)
                 texto_extraido = texto_extraido.strip()
 
-                if texto_extraido == """TAKT TIME\n00:00:00""":
+                if (
+                    texto_extraido == """TAKT TIME\n00:00:00"""
+                    or texto_extraido == """TAKT TIME\n\n00:00:00"""
+                    or texto_extraido == """TART TIME\n\n00:00:00"""
+                    or texto_extraido == """TAKT TIME\n\n"""
+                    or texto_extraido == """TART TIME\n\n"""
+                    or texto_extraido == """TAKT TIME\n"""
+                    or texto_extraido == """TART TIME\n"""
+                ):
                     print("Takt Time detected")
                     cap.release()
                     cv2.destroyAllWindows()

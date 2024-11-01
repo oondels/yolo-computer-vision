@@ -47,7 +47,9 @@ async def main():
                     or texto_extraido == """TAKT TIME\n\n00:00:00"""
                     or texto_extraido == """TART TIME\n\n00:00:00"""
                     or texto_extraido == """TAKT TIME\n\n"""
+                    or texto_extraido == """TART TIME\n\n"""
                     or texto_extraido == """TAKT TIME\n"""
+                    or texto_extraido == """TART TIME\n"""
                 ):
                     print(texto_extraido)
                     print("Takt Time detected")

@@ -8,13 +8,12 @@ import cv2
 pytesseract.pytesseract.tesseract_cmd = (
     r"C:/Users/hendrius.santana/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 )
-cap = cv2.VideoCapture("takt_menor.mp4")
+cap = cv2.VideoCapture("./utils/takt_menor.mp4")
 model = YOLO("./dataset/runs/detect/train/weights/best.pt")
 
 
 async def send_message(message):
-    async with websockets.connect("ws://192.168.26.90:9003") as websocket:
-        await websocket.send(message)
+    pass
 
 
 async def main():

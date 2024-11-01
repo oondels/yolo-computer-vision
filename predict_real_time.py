@@ -9,11 +9,11 @@ import numpy as np
 pytesseract.pytesseract.tesseract_cmd = (
     r"C:/Users/hendrius.santana/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 )
-model = YOLO("./dataset/runs/detect/train/weights/best.pt")
+model = YOLO("./dataset/runs/detect/train2/weights/best.pt")
 
 
 async def send_message(message):
-    async with websockets.connect("ws://192.168.26.90:9003") as websocket:
+    async with websockets.connect("ws://localhost:82") as websocket:
         await websocket.send(message)
 
 
@@ -41,9 +41,9 @@ async def main():
                 # Usando pytesseract para extração do texto
                 texto_extraido = pytesseract.image_to_string(roi)
                 texto_extraido = texto_extraido.strip()
-
                 if (
                     texto_extraido == """TAKT TIME\n00:00:00"""
+                    or texto_extraido == """TART TIME\n00:00:00"""
                     or texto_extraido == """TAKT TIME\n\n00:00:00"""
                     or texto_extraido == """TART TIME\n\n00:00:00"""
                     or texto_extraido == """TAKT TIME\n\n"""
@@ -51,19 +51,19 @@ async def main():
                     or texto_extraido == """TAKT TIME\n"""
                     or texto_extraido == """TART TIME\n"""
                 ):
+                    await send_message("Takt liberado")
                     print(texto_extraido)
-                    print("Takt Time detected")
 
                     # Encerrar o loop e o programa quando a mensagem for detectada
-                    cv2.destroyAllWindows()
-                    return
+                    # cv2.destroyAllWindows()
+                    # return
 
                 # Pressionar 'q' para sair
-                if cv2.waitKey(1) & 0xFF == ord("q"):
-                    cv2.destroyAllWindows()
-                    return
+                # if cv2.waitKey(1) & 0xFF == ord("q"):
+                #     cv2.destroyAllWindows()
+                #     return
 
-        await asyncio.sleep(0.1)  # Pequeno delay para não sobrecarregar o sistema
+        await asyncio.sleep(0.5)  # Pequeno delay para não sobrecarregar o sistema
 
 
 asyncio.run(main())

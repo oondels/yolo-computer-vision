@@ -1,5 +1,5 @@
-train: ./images/train # Caminho para o diretório de treino
-val: ./images/val # Caminho para o diretório de validação
+train: ./train # Caminho para o diretório de treino
+val: ./val # Caminho para o diretório de validação
 
 nc: 1 # Número de classes
 

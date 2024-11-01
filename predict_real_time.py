@@ -4,11 +4,11 @@ from ultralytics import YOLO
 from PIL import ImageGrab
 import pytesseract
 import cv2
+import numpy as np
 
 pytesseract.pytesseract.tesseract_cmd = (
     r"C:/Users/hendrius.santana/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 )
-cap = cv2.VideoCapture("takt_menor.mp4")
 model = YOLO("./dataset/runs/detect/train/weights/best.pt")
 
 
@@ -18,10 +18,13 @@ async def send_message(message):
 
 
 async def main():
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+    while True:
+        # Capturar a tela em tempo real
+        screen = ImageGrab.grab()
+        screen_np = np.array(screen)
+
+        # Converter a imagem para o formato do OpenCV (RGB -> BGR)
+        frame = cv2.cvtColor(screen_np, cv2.COLOR_RGB2BGR)
 
         # Fazer a predição no frame atual
         results = model.predict(source=frame, stream=False, conf=0.15)
@@ -33,21 +36,28 @@ async def main():
                 roi = frame[y1:y2, x1:x2]
 
                 # Mostrar a região de interesse
-                cv2.imshow("ROI", roi)
+                # cv2.imshow("ROI", roi)
 
                 # Usando pytesseract para extração do texto
                 texto_extraido = pytesseract.image_to_string(roi)
                 texto_extraido = texto_extraido.strip()
 
-                if texto_extraido == """TAKT TIME\n00:00:00""":
+                if (
+                    texto_extraido == """TAKT TIME\n00:00:00"""
+                    or texto_extraido == """TAKT TIME\n\n00:00:00"""
+                    or texto_extraido == """TART TIME\n\n00:00:00"""
+                    or texto_extraido == """TAKT TIME\n\n"""
+                    or texto_extraido == """TAKT TIME\n"""
+                ):
+                    print(texto_extraido)
                     print("Takt Time detected")
-                    cap.release()
+
+                    # Encerrar o loop e o programa quando a mensagem for detectada
                     cv2.destroyAllWindows()
                     return
 
                 # Pressionar 'q' para sair
                 if cv2.waitKey(1) & 0xFF == ord("q"):
-                    cap.release()
                     cv2.destroyAllWindows()
                     return
 
